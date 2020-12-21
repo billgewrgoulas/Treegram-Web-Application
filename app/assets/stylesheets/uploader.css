@@ -1,0 +1,82 @@
+.img-container{
+    text-align: center;
+    border-radius: 7px;
+    border: dashed 5px blue;
+    position: relative;
+    width: 51.5%;
+    height: 240px;
+    background-image: url("/system/photos/photo.png");
+    background-position: center;
+    background-size: 180px 130px;
+    background-repeat: no-repeat;
+}
+
+#drop-zone{
+   margin-top: 10px;
+   font-size: 1rem;
+   color: grey;
+   font-weight: bold;
+   
+}
+#img-name{
+   margin-top:.7rem;
+}
+.img-container:hover{
+    cursor: pointer;
+}
+#arrow-circle{
+    font-size: 30px;
+    border-radius: 50%;
+    background-color: white;
+    color:#2590EB;
+    transition: color .5s ease-in-out;
+}
+#arrow-circle:hover{
+    color: rgb(255, 255, 255);
+    background-color: #2590EB;
+}
+#new_photo{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 15%;
+    background-color: white;
+    margin-top: 2%;
+    width: 70%;
+    border-radius: 10px;
+}
+
+#new_photo>h1{
+
+    margin-top:15px;
+
+}
+
+#img-input{
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    opacity: 0;
+    top:0;
+    left: 0;
+}
+#img-input:hover{
+    cursor: pointer;
+}
+
+#title{
+    width:40%;
+    
+}
+#new_photo>label{
+    font-size: 35px;
+    
+}
+.btn-lg{
+    width: 30%;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}

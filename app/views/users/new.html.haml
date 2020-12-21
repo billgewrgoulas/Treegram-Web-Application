@@ -1,0 +1,25 @@
+
+.background 
+
+%form{:action => "/users", :enctype => "multipart/form-data", :method => "POST", :style => "height: 100%;"}
+  %input{:name => "authenticity_token", :type => "hidden", :value => form_authenticity_token}/
+  .my-awesome-form
+    .my-amazing-card
+      %h1
+        %b Sign up
+      .my-awesome-input
+        %label{:for => "user_email"} Email
+        %input#user_email.form-control{:name => "user[email]", :required => "", :type => "email"}/
+      .my-awesome-input
+        %label{:for => "user_password"} Password
+        %input#user_password.form-control{:name => "user[password]", :required => "", :type => "password"}/
+      .my-awesome-input
+        %label{:for => "user_password_confirmation"} Confirm Password
+        %input#user-password.form-control{:name => "user[password_confirmaition]", :required => "", :type => "password"}/
+      .my-awesome-input
+        %label{:for => "user_avatar"} Upload Avatar
+        %input#user_avatar{:name => "user[avatar]", :type => "file", :value => "Browse"}/
+      %button#shiny-button.btn-bg.btn.btn-primary.shiny-button{:name => "commit", :type => "submit"} Log In
+      .small-link
+        %span Already have an account?
+        %a{:href => "/log-in"} Sign In

@@ -1,0 +1,38 @@
+
+
+#top-bar.sticky
+  .logo
+    .toggler
+      %i.fa.fa-fw.fa-bars{:onclick => "toggler()"}
+    .options
+      %span#arrow ▲
+      = link_to 'Add Photo', new_user_photo_path(@user), class: ['my-btn','btn', 'btn-primary']
+      %br/
+      %a.btn.my-btn.btn-primary{:href => "/users/#{@user.id}/users"} Find Users
+    %img{:src => "/system/photos/gallery.png",:onclick => "homePage(#{@user.id})" , :style => "width:40px; height:40px;"}/
+    %span.welcome-message Welcome to PhotoShare!!!
+  .right
+    .add-btn
+      = link_to 'Add Photo', new_user_photo_path(@user), class: ['btn', 'btn-primary' , 'topbar-buttons']
+    .add-btn
+      %a.btn.btn-primary.topbar-buttons{:href => "/users/#{@user.id}/users"} Find Users
+    .la-btn
+      = link_to 'Log Out', log_out_path, class: ['btn', 'btn-primary', 'topbar-buttons']
+    .user
+      - if @user.avatar_file_name
+        %img.rounded-circle{:src => @user.avatar.url(:thumb), :style => "margin-top:1px; width:40px; height:40px;float:left;"}/
+      - else
+        %i#uicon.fa.fa-user{:style => "font-size:40px;color:rgb(255, 255, 255);"}
+    .profile-dropdown
+      %span.profile-header
+        %b Profile
+      .divider
+      .profile-item
+        .profile-description
+          My Email: 
+          %br/
+          #{@user.email}
+            
+
+
+

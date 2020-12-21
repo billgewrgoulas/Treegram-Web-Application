@@ -1,0 +1,21 @@
+
+
+= render 'partials/topbar', :info => @info
+
+%h1{:style => " color:rgb(12, 9, 9);text-align:center;"}
+  %b Find Users to follow:
+.seperator
+.grid-is-amazing
+  -@users.each do |user|
+    .tiny-user-container
+      .mini-flex
+        - if user.avatar_file_name
+          %img.js-hover.squere-box{:id => "#{user.id}",:src => user.avatar.url(:thumb) , :style => "width:70px;height:70px;border-radius:6px;"}/
+        - else
+          %img.js-hover.squere-box{:id => "#{user.id}",:src => "/system/users/avatars/uicon.jpg" , :style => "width:70px;height:70px;border-radius:6px;"}/
+        %small{:style => "margin-left: 3px;"} #{user.photos.length} posts
+      = is_following(user)
+      %p{:style => "text-align: left;"}=user.email
+
+
+

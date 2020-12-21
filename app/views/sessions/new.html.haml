@@ -1,0 +1,18 @@
+.background 
+
+%form{:action => log_in_path, :method => "POST", :style => "height: 100%;"}
+  %input{:name => "authenticity_token", :type => "hidden", :value => form_authenticity_token}/
+  .my-awesome-form
+    .my-amazing-card
+      %h1
+        %b Log In
+      .my-awesome-input
+        %label{:for => "email"} Email
+        %input#email.form-control{:name => "email", :required => "", :type => "email"}/
+      .my-awesome-input
+        %label{:for => "password"} Password
+        %input#password.form-control{:name => "password", :required => "", :type => "password"}/
+      %button#shiny-button.btn-bg.btn.btn-primary.shiny-button{:type => "submit"} Log In
+      .small-link
+        %span Not a member?
+        %a{:href => "/users/new"} Sign Up

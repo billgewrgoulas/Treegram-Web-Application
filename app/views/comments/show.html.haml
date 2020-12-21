@@ -1,0 +1,36 @@
+
+= render 'partials/topbar', :info => @info
+
+%h1{:style => " color:rgb(12, 9, 9);text-align:center;"}
+  %b Image ##{@photo.id}:
+.seperator
+
+<!----Main----->
+
+.outer
+  .huge-image-container
+    %img{:src => "#{@photo.image.url}", :style => "height: 93%; width:100%;"}/
+    .title
+      %b=@photo.title
+  %h1 Comments
+  %form#super-form{:action => "/users/#{@user.id}/comments", :method => "POST"}
+    %input#photo_id{:type => "hidden", :name => "photo_id", :value => "#{@photo.id}"}/
+    %input{:name => "authenticity_token", :type => "hidden", :value => form_authenticity_token}/
+    %textarea#text.cool-new-comment-box{:name => "text", :placeholder => "leave your comment..."}
+    %br/
+    %input#css-post.btn.btn-primary{:name => "submit", :onclick => "newComment()", :style => " width: 9rem; ", :type => "button", :value => "Post"}/
+    %input#css-cancel.btn.btn-danger{:style => " width: 9rem; ", :type => "button", :value => "Cancel"}/
+  .comments-list
+    - @commentsDto.each do |c|
+      .lots-of-divs
+        - if c['avatarUrl'] != "/avatars/thumb/missing.png"
+          %img.rounded-circle{:src => "#{c['avatarUrl']}", :style => "margin-right: 3px; margin-top:1px; width:40px; height:40px;float:left;"}/
+        - else
+          %img.rounded-circle{:src => "/system/users/avatars/uicon.jpg", :style => "margin-right: 3px; margin-top:1px; width:40px; height:40px;float:left;"}/
+        .comment
+          %b #{c['email']} said:
+          %br/
+          .comment-body
+            %p
+              #{c['text']}
+

@@ -1,0 +1,57 @@
+
+= render 'partials/topbar', :info => @info
+
+/ ----------------------------------main content------------------------------------------------
+
+
+.gallery
+  %h1{:style => " color:rgb(12, 9, 9);text-align:center;"}
+    %b My Gallery:
+  .seperator
+
+.incredible-grid
+  - @followerPhotos.each  do |photo|
+    .image-container{:id => "#{photo.user_id}-#{photo.id}"}
+      .comment-del
+        %i.fa.fa-times-circle.fa-lg.js-remove
+      .slider.hidden
+        %i.fas.fa-chevron-left.pagination-left.js-next
+        %i.fas.fa-chevron-right.pagination-right.js-next
+        .image-options
+          %i.fas.fa-comments.js-opt
+          %i.far.fa-arrow-alt-circle-right.js-live.js-opt
+          %i.fas.fa-times.js-opt
+      %img.js-photo{:onclick => "commentSection(#{@user.id},#{photo.id})" , :src => "#{photo.image.url}", :style => "height: 100%; width: 100%;position: absolute;margin-bottom:.1px"}/
+      .img-menu
+        .image-title
+          %h1{:style => "font-size: medium; color:white;text-align:center;"}=photo.title
+        .dropdown
+          %button#dropdownMenuButton.btn.btn-sm.btn-primary.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+            Tag A User
+          .dropdown-menu.max-height{"aria-labelledby" => "dropdownMenuButton"}
+         
+            = form_for @tag do |f|
+              = f.hidden_field :photo_id, value:photo.id
+              = f.hidden_field :user_id, value:0
+              -@users.each do |user|
+                .box{id: "#{user.id}", class: "js-tag dropdown-item"}=user.email
+
+        .dropdown
+          %button#dropdownMenuButton.btn.btn-sm.btn-primary.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+            Tagged Users
+          .dropdown-menu.max-height{"aria-labelledby" => "dropdownMenuButton", :id => "#{photo.id}tu"}
+            - photo.tags.each do |tag|
+              .dropdown-item=tag.user.email
+
+        %br/
+        %br/
+        .tag{ :id => "#{photo.id}tag" }
+          %i.fas.fa-comments.fa-sm{"data-comments-count" => "#{photo.comments.length}"}
+          %i#tagicon.fa.fa-tag.fa-sm{"data-tag-count" => "#{photo.tagcount}", :style => "color:rgb(255, 255, 255);"}
+         
+
+%script{:crossorigin => "anonymous", :integrity => "sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49", :src => "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"}
+%script{:crossorigin => "anonymous", :integrity => "sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy", :src => "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"}
+
+
+

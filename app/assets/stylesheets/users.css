@@ -1,0 +1,49 @@
+html{
+    height: 100%;
+    width: 100%;
+}
+body{
+    height: 100%;
+    width: 100%;
+    background-color: rgb(165, 153, 255) ;
+}
+
+.grid-is-amazing{
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, 250px); 
+    grid-gap: 1rem; 
+    justify-content: center; 
+    margin-top: 50px;
+}
+.tiny-user-container{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    overflow: hidden;
+    align-items: center;
+    justify-content: flex-start;
+    width: 200px;
+    height: 135px;
+}
+#uidI{
+    font-size: 22px;
+    top: -2%;
+    left: 50%;
+    position: absolute !important;
+    color: red;
+}
+.mini-flex{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+img:hover{
+    cursor: pointer;
+}
+
+
+  /*much easier to just use grid
+/*.amazing-flexbox::after{
+    content: "";
+    flex: auto;
+}*/

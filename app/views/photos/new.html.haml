@@ -1,0 +1,11 @@
+
+= render 'partials/topbar', :info => @info
+= form_for Photo.new(), :url => user_photos_path, :html => {:multipart => true} do |form|
+  %h1 Add A Photo
+  .img-container
+    %p#drop-zone click to browse or drag
+    %input#img-input{:accept => ".png, .jpg, .jpeg",:required => "", :name => "photo[image]", :type => "file"}/
+  %p#img-name
+  %label{:for => "title"} Give a title:
+  %input#title.form-control{:name => "title", :placeholder => "my photo...", :required => "", :type => "text", :value => ""}/
+  %input.btn.btn-primary.btn-lg{:type => "submit",:name => "commit", :value => "Upload"}/
