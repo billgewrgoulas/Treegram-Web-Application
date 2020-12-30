@@ -5,7 +5,6 @@ $(document).ready(function(){
      //fix issue with turbolinks
     $(document).on("turbolinks:load",function(){
 
-
         $(" .js-hover").on("click",function(event){
 
             var uidI = $(this).parent().siblings()[0];

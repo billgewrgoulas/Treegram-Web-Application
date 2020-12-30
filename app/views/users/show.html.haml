@@ -21,7 +21,7 @@
           %i.fas.fa-comments.js-opt
           %i.far.fa-arrow-alt-circle-right.js-live.js-opt
           %i.fas.fa-times.js-opt
-      %img.js-photo{:onclick => "commentSection(#{@user.id},#{photo.id})" , :src => "#{photo.image.url}", :style => "height: 100%; width: 100%;position: absolute;margin-bottom:.1px"}/
+      %img.js-photo{:src => "#{photo.image.url}", :style => "height: 100%; width: 100%;position: absolute;margin-bottom:.1px"}/
       .img-menu
         .image-title
           %h1{:style => "font-size: medium; color:white;text-align:center;"}=photo.title

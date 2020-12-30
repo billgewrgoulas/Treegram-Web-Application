@@ -20,17 +20,19 @@ function fn() {
     var threshold = 0;
     var pos = 0;
     var end = false;
- 
+
     //add slides to the slideshow
     const addSlides = function(pslides, uid) {
         threshold = 0;
-
-        pslides = JSON.parse(pslides);
 
         //make sure to position slides properly at first fetch      
         if (pos == 0) {
             pos = -110;
         }
+
+	if(slider.children[3].classList.contains("loader")){
+	    slider.children[3].remove();
+	}
 
         for (let i = 0; i < pslides.length; i++) {
             pos += 110;
@@ -46,23 +48,22 @@ function fn() {
     }
 
     //fetch from server
-    var fetchPhotos = function(uId) {
+    var fetchPhotos = async function(uId) {
 
-        var request = new XMLHttpRequest();
-
-        request.open("GET", "/photos/" + index + "&" + uId, true);
-
-        request.onload = function() {
-            if (this.status >= 200 && this.status < 400) {
-                addSlides(this.response, uId);
+        const promise = await fetch("/photos/" + index + "&" + uId, {
+            method: "GET"
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+                
             } else {
-                //nothin
+                return Promise.reject(response);
             }
-        };
-        request.onerror = function() {
-            confirm("panic");
-        };
-        request.send();
+        }).then((data) =>{
+	    addSlides(data, uId);
+	}).catch((err) => {
+            console.warn("panic", err);
+        });
     }
 
     // move the slides
@@ -123,6 +124,9 @@ function fn() {
         const u_id = ids[0];
 
         slider = awesome.children[1];
+
+	const loader = `<div class="loader"></div>`;
+        $(slider).append(loader);
         slider.classList.remove("hidden");
 
         slider.children[0].classList.remove("hidden");
@@ -139,7 +143,6 @@ function fn() {
 
         slider.classList.add("hidden");
         slider.classList.remove("toggleSlider");
-        
 
         //in case the live show is up
         clearInterval(show);
@@ -152,9 +155,9 @@ function fn() {
 
         //remove from last to first
         for (var i = slidesNum - 1; i > 0; i--) {
-            if(slides[i].classList.contains("slider-component")){
+            if (slides[i].classList.contains("slider-component")) {
                 slides[i].remove();
-	    }
+            }
         }
     }
 
@@ -167,7 +170,7 @@ function fn() {
         slider.children[1].classList.add("hidden");
 
         //start from current index and from left to right 
-        show = setInterval( () => {
+        show = setInterval(() => {
             next[1].click();
             if (end) {
                 clearInterval(show);
@@ -211,16 +214,12 @@ function fn() {
     //redirect to comment section
     grid.addEventListener("click", (event) => {
         var clicked = event.target.closest(".slide-image");
-        if(!clicked){
+        if (!clicked) {
             return;
-	}
+        }
+        clearInterval(show);
         const pid = clicked.id;
         const uid = clicked.parentNode.id;
         window.location.href = "/users/" + uid + "/comments/" + pid;
     })
 }
-
-
-
-
-
