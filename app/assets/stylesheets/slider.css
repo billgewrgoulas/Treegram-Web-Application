@@ -127,4 +127,38 @@
   100% { transform: rotate(360deg); }
 }
 
+.comment-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
 
+.comment-header .space {
+    width: 10%;
+}
+
+.comment-header .header-title {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-title h1 {
+    font-size: 20px;
+    text-align: center;
+}
+
+.comment-header .closeBtnContainer {
+    width: 10%;
+}
+
+#closeCommentsButton {
+    background-color: transparent;
+    border-style: none;
+}
+
+.fa-times-circle {
+    font-size: 20px;
+}

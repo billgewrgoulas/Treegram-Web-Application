@@ -11,6 +11,7 @@ function fn() {
     const options = document.querySelectorAll(".image-options");
     const grid = document.querySelector(".incredible-grid");
     const post = document.querySelectorAll(".js-post");
+    const closeBtn = document.querySelector("#closeCommentsButton");
     var comments = null;
     var slides = null;
     var slider = null;
@@ -337,5 +338,14 @@ function fn() {
         ids.push(clicked.parentNode.id); //uid
 
         fetchComments();
+    })
+
+    // hide comments section when close button clicked
+    closeBtn.addEventListener("click", (event2) => {
+        const clicked = event2.target.closest("#closeCommentsButton");
+
+        if (clicked) {
+            hideComments();
+        }
     })
 }
