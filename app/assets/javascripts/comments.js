@@ -1,7 +1,7 @@
 
 
 //fix issue with turbolinks
-$(document).on("turbolinks:load",function(){
+/*$(document).on("turbolinks:load",function(){
 
     $(".cool-new-comment-box").focus(function(event){
         $("#text").css({"width": "500px", "height": "100px"})
@@ -49,7 +49,7 @@ function myCallback(text,email,avatar){
 
     var newComment = `
         <div class="lots-of-divs">
-            <img src = ${avatar} class="rounded-circle" style="width: 40px; height:40px;margin-right:3px;">
+            <img src = ${url} class="rounded-circle" style="width: 40px; height:40px;margin-right:3px;">
             <div class="comment">
                 <b>${email} said: </b>
                 </br>
@@ -65,6 +65,38 @@ function myCallback(text,email,avatar){
     $(" .comments-list").prepend(newComment).fadeIn("slow");
 
 }
+
+*/
+//part 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

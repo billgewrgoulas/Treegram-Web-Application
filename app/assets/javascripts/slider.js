@@ -10,9 +10,12 @@ function fn() {
     const containers = document.querySelectorAll(".image-container");
     const options = document.querySelectorAll(".image-options");
     const grid = document.querySelector(".incredible-grid");
+    const post = document.querySelectorAll(".js-post");
+    var comments = null;
     var slides = null;
     var slider = null;
     var show = null;
+    var ids = [];
 
     //we need to let the server know which photos to return
     var index = 0;
@@ -20,6 +23,80 @@ function fn() {
     var threshold = 0;
     var pos = 0;
     var end = false;
+
+    ////////////////////async calls to the server to retrieve/post data//////////////////////////
+
+    // create new comment and append to dom
+    const addComment = async function(event) {
+
+        const text = event.target.parentNode.children[0];
+
+        var fd = new FormData();
+
+        var myData = {
+
+            "uid": ids[1],
+            "pid": ids[0],
+            "text": text.textContent
+
+        };
+
+        fd.append("jsondata", JSON.stringify(myData));
+
+        await fetch("/users/" + ids[1] + "/comments", {
+            method: "POST",
+            body: fd,
+        }).then((response) => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                return Promise.reject(response);
+            }
+        }).then((data) => {
+            addComments([JSON.parse(data)]);
+        }).catch((error) => {
+            console.error("panic", error);
+        });
+    }
+
+    //fetch photos from server
+    const fetchPhotos = async function(uId) {
+
+        await fetch("/photos/" + index + "&" + uId, {
+            method: "GET"
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+
+            } else {
+                return Promise.reject(response);
+            }
+        }).then((data) => {
+            addSlides(data, uId);
+        }).catch((error) => {
+            console.warn("panic", error);
+        });
+    }
+
+    const fetchComments = async function(event) {
+        await fetch("/photos/" + ids[0] + "/comments", {
+            method: "GET"
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return Promise.reject(response);
+            }
+        }).then((data) => {
+            addComments(data);
+        }).catch((err) => {
+            console.warn("panic", err);
+        });
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////// main functionalities//////////////////////////////
 
     //add slides to the slideshow
     const addSlides = function(pslides, uid) {
@@ -30,9 +107,9 @@ function fn() {
             pos = -110;
         }
 
-	if(slider.children[3].classList.contains("loader")){
-	    slider.children[3].remove();
-	}
+        if (slider.children[3].classList.contains("loader")) {
+            slider.children[3].remove();
+        }
 
         for (let i = 0; i < pslides.length; i++) {
             pos += 110;
@@ -47,30 +124,14 @@ function fn() {
         }
     }
 
-    //fetch from server
-    var fetchPhotos = async function(uId) {
-
-        const promise = await fetch("/photos/" + index + "&" + uId, {
-            method: "GET"
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-                
-            } else {
-                return Promise.reject(response);
-            }
-        }).then((data) =>{
-	    addSlides(data, uId);
-	}).catch((err) => {
-            console.warn("panic", err);
-        });
-    }
-
     // move the slides
     const slide = function() {
 
         index += this;
         threshold += this;
+
+        //in case the comment pop up is visible
+        hideComments();
 
         //cant slide to left
         if (index == -1) {
@@ -123,9 +184,9 @@ function fn() {
         const ids = awesome.id.split("-");
         const u_id = ids[0];
 
-        slider = awesome.children[1];
+        slider = awesome.children[0];
 
-	const loader = `<div class="loader"></div>`;
+        const loader = `<div class="loader"></div>`;
         $(slider).append(loader);
         slider.classList.remove("hidden");
 
@@ -138,7 +199,7 @@ function fn() {
         end = false;
     }
 
-    //we are done, clear the slider
+    //we are done, clear the slider , also clear the comments
     const mouseOut = function(event) {
 
         slider.classList.add("hidden");
@@ -155,10 +216,11 @@ function fn() {
 
         //remove from last to first
         for (var i = slidesNum - 1; i > 0; i--) {
-            if (slides[i].classList.contains("slider-component")) {
+            if (slides[i].classList.contains("slider-component") || slides[i].classList.contains("loader")) {
                 slides[i].remove();
             }
         }
+        hideComments();
     }
 
     // set up the live show
@@ -179,6 +241,7 @@ function fn() {
 
     }
 
+    //image options for deleting/starting the live show
     const imageOptions = function(event) {
         const clicked = event.target.closest(".js-opt");
         if (!clicked) {
@@ -190,11 +253,49 @@ function fn() {
         }
     }
 
-    const comments = function(event) {
-        //
+    //add new comments to the comment pop up
+    const addComments = function(data) {
+
+        for (let i = 0; i < data.length; i++) {
+
+            let avatar = data[i].url;
+            if (avatar == "/avatars/thumb/missing.png") {
+                avatar = "/system/users/avatars/uicon.jpg";
+            }
+
+            var newComponent = `
+           		<div class="comment">
+                	<div class="comment-user">
+                	    <img src="${avatar}" alt="Avatar" class="avatar">
+                	    	<span>${data[i].email}:</span>
+                	</div>
+                	<div class="comment-body comment-text">
+                	    ${data[i].text}
+                	</div>
+            	</div>
+        	`;
+
+            $(comments.children[1]).prepend(newComponent);
+        }
     }
 
-    //bind my handlers
+    //hide the comment pop up and remove all appended comments in the comment section
+    const hideComments = function() {
+
+        if (comments == null) {
+            return;
+        }
+
+        comments.classList.add("hidden");
+        comments.children[1].innerHTML = "";
+        comments = null;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////bind my handlers//////////////////////////
+
+    //pagination buttons
     for (let i = 0; i < next.length; i++) {
         let direction = null;
         if (next[i].classList.contains("pagination-right")) {
@@ -205,21 +306,36 @@ function fn() {
         next[i].addEventListener("click", slide.bind(direction));
     }
 
+    // show/hide slider
     for (let i = 0; i < containers.length; i++) {
         containers[i].addEventListener("mouseover", mouseIn);
         containers[i].addEventListener("mouseleave", mouseOut);
         options[i].addEventListener("click", imageOptions);
+        post[i].addEventListener("click", addComment);
     }
 
-    //redirect to comment section
+    //prepare/hide the comments pop up
     grid.addEventListener("click", (event) => {
-        var clicked = event.target.closest(".slide-image");
+
+        const clicked = event.target.closest(".slide-image");
+
         if (!clicked) {
             return;
         }
+
+        if (comments != null) {
+            hideComments();
+            return;
+        }
+
+        comments = slider.parentNode.children[1];
+        comments.classList.remove("hidden");
+
         clearInterval(show);
-        const pid = clicked.id;
-        const uid = clicked.parentNode.id;
-        window.location.href = "/users/" + uid + "/comments/" + pid;
+        ids = [];
+        ids.push(clicked.id); //pid
+        ids.push(clicked.parentNode.id); //uid
+
+        fetchComments();
     })
 }

@@ -205,7 +205,7 @@ body {
 
 .incredible-grid{
     display: grid; 
-    grid-template-columns: repeat(auto-fill, 420px); 
+    grid-template-columns: repeat(auto-fill, 530px); 
     grid-gap: 1rem; 
     justify-content: center; 
     margin-top: 40px;
@@ -216,12 +216,12 @@ body {
 }
 
 .image-container {
-    height: 230px;
+    height: 370px;
     display:inline-block;
     box-shadow: 5px 5px 0px rgba(66, 101, 255, 0.63);
     border: 5px solid #242424;
     border-radius: 5px;
-    width: 400px;
+    width: 510px;
     margin-bottom: 1.5rem !important;
     z-index: 4;
     margin: 0.8rem;

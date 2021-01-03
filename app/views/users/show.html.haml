@@ -3,6 +3,7 @@
 
 / ----------------------------------main content------------------------------------------------
 
+.overlay.hidden
 
 .gallery
   %h1{:style => " color:rgb(12, 9, 9);text-align:center;"}
@@ -12,8 +13,6 @@
 .incredible-grid
   - @followerPhotos.each  do |photo|
     .image-container{:id => "#{photo.user_id}-#{photo.id}"}
-      .comment-del
-        %i.fa.fa-times-circle.fa-lg.js-remove
       .slider.hidden
         %i.fas.fa-chevron-left.pagination-left.js-next
         %i.fas.fa-chevron-right.pagination-right.js-next
@@ -21,6 +20,14 @@
           %i.fas.fa-comments.js-opt
           %i.far.fa-arrow-alt-circle-right.js-live.js-opt
           %i.fas.fa-times.js-opt
+      .comments.hidden
+        .comment-header
+          %h1 Comments
+        .comment-section
+          
+        .input
+          %span.textarea{:contenteditable => "", :role => "textbox"}
+          %button.btn.btn-warning.js-post Post
       %img.js-photo{:src => "#{photo.image.url}", :style => "height: 100%; width: 100%;position: absolute;margin-bottom:.1px"}/
       .img-menu
         .image-title

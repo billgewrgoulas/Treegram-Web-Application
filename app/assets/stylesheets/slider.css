@@ -1,14 +1,16 @@
 
 
 .slider {
+
     
-    width: 25rem;
-    height: 14.375rem;
+    width: 33rem;
+    height: 24.375rem;
     box-shadow: 5px 5px 0px rgba(66, 101, 255, 0.63);
     border: 5px solid #242424;
     top: -1rem;
     left: -1rem;
-    transition all 3s;
+    transition-property: width;
+    transition-duration: 0.9s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -20,10 +22,7 @@
     text-align: center;
 }
 
-.slider:hover{
-    width: 26rem;
-    height: 16rem;
-}
+
 
 .photo-title {
     position: absolute;
@@ -90,16 +89,6 @@
 
 .fade-out {
     animation: fade-out 1s;
-}
-
-.overlay {
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 5;
 }
 
 .image-options {
