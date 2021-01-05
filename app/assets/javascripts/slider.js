@@ -25,7 +25,7 @@ function fn() {
     var pos = 0;
     var end = false;
 
-    ////////////////////async calls to the server to retrieve/post data//////////////////////////
+    ////////////////////async calls to the server to retrieve/post data /delete//////////////////////////
 
     // create new comment and append to dom
     const addComment = async function(event) {
@@ -78,7 +78,7 @@ function fn() {
             console.warn("panic", error);
         });
     }
-
+    //get the comments for the clicked photo
     const fetchComments = async function(event) {
         await fetch("/photos/" + ids[0] + "/comments", {
             method: "GET"
@@ -90,6 +90,23 @@ function fn() {
             }
         }).then((data) => {
             addComments(data);
+        }).catch((err) => {
+            console.warn("panic", err);
+        });
+    }
+
+    const deleteFromdb = async function(photo_id,user_id) {
+	console.log(photo_id);
+        await fetch("/users/"+user_id+"/photos/" + photo_id, {
+            method: "DELETE"
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return Promise.reject(response);
+            }
+        }).then((data) => {
+            //nothin
         }).catch((err) => {
             console.warn("panic", err);
         });
@@ -251,6 +268,8 @@ function fn() {
         if (clicked.classList.contains("js-live")) {
             clicked.parentNode.classList.add("hidden");
             liveShow(clicked);
+        } else if (clicked.classList.contains("js-delete")) {
+            deletePhoto();
         }
     }
 
@@ -290,6 +309,37 @@ function fn() {
         comments.classList.add("hidden");
         comments.children[1].innerHTML = "";
         comments = null;
+    }
+
+    const deletePhoto = function() {
+
+        slides = slider.children;
+        var i , x = null;
+        for (i = 3; i < slides.length; i++) {
+            if (slides[i].dataset.position == 0) {
+		deleteFromdb((slides[i].children[0]).id , slides[i].id);
+                break;
+            }
+        }
+        //realign to the right
+        if (i == slides.length - 1) {
+            slides[i].remove();
+            for (let j = 3; j < slides.length; j++) {
+                x = 1*slides[j].dataset.position + 110;
+                slides[j].dataset.position = x;
+                slides[j].style.transform = "translateX( " + x + "% )";
+                
+            }
+            index--;
+            //realign to the left
+        } else {
+            for (let j = i + 1; j < slides.length; j++) {
+                x = 1*slides[j].dataset.position - 110;
+                slides[j].dataset.position = x;
+                slides[j].style.transform = "translateX( " + x + "% )";
+            }
+            slides[i].remove();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

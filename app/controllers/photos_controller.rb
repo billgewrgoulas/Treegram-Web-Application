@@ -1,5 +1,6 @@
 class PhotosController < ApplicationController
   protect_from_forgery unless: -> { request.format.json? }
+  skip_before_action :verify_authenticity_token
   def create
     @user = User.find(params[:user_id])
     if params[:photo] == nil
@@ -46,15 +47,8 @@ class PhotosController < ApplicationController
 
   def destroy
 
-    @photo = Photo.find_by(id: params[:id] , user_id: session[:user_id])
+    @photo = Photo.find_by(id: params[:id])
 
-    if @photo == nil
-      #belongs to some1 the user follows
-      p = Photo.find(params[:id])
-      user = User.find_by(id: p.user_id)
-      render json: { failed: true , email: user.email }
-      return
-    end
 
     @photo.destroy
     
