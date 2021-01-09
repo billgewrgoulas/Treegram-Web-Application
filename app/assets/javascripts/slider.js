@@ -9,9 +9,9 @@ function fn() {
     const next = document.querySelectorAll(".js-next");
     const containers = document.querySelectorAll(".image-container");
     const options = document.querySelectorAll(".image-options");
+    const closeCommentBtn = document.querySelectorAll(".close-btn");
     const grid = document.querySelector(".incredible-grid");
     const post = document.querySelectorAll(".js-post");
-    const closeBtn = document.querySelector("#closeCommentsButton");
     var comments = null;
     var slides = null;
     var slider = null;
@@ -23,6 +23,7 @@ function fn() {
 
     var threshold = 0;
     var pos = 0;
+    var clicks = 0;
     var end = false;
 
     ////////////////////async calls to the server to retrieve/post data /delete//////////////////////////
@@ -63,22 +64,21 @@ function fn() {
     //fetch photos from server
     const fetchPhotos = async function(uId) {
 
-        await fetch("/photos/" + index + "&" + uId, {
-            method: "GET"
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-
-            } else {
-                return Promise.reject(response);
-            }
-        }).then((data) => {
-            addSlides(data, uId);
-        }).catch((error) => {
-            console.warn("panic", error);
-        });
-    }
-    //get the comments for the clicked photo
+            await fetch("/photos/" + index + "&" + uId, {
+                method: "GET"
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            }).then((data) => {
+                addSlides(data, uId);
+            }).catch((error) => {
+                console.warn("panic", error);
+            });
+        }
+        //get the comments for the clicked photo
     const fetchComments = async function(event) {
         await fetch("/photos/" + ids[0] + "/comments", {
             method: "GET"
@@ -95,18 +95,25 @@ function fn() {
         });
     }
 
-    const deleteFromdb = async function(photo_id,user_id) {
-	console.log(photo_id);
-        await fetch("/users/"+user_id+"/photos/" + photo_id, {
+    //delete from the db and from the dom
+    const deletePhoto = async function() {
+
+        slides = slider.children;
+        let i;
+        for (i = 3; i < slides.length; i++) {
+            if (slides[i].dataset.position == 0) {
+                break;
+            }
+        }
+
+        await fetch("/users/" + slides[i].id + "/photos/" + (slides[i].children[0]).id, {
             method: "DELETE"
         }).then((response) => {
             if (response.ok) {
-                return response.json();
+                deleteFromDom(i);
             } else {
                 return Promise.reject(response);
             }
-        }).then((data) => {
-            //nothin
         }).catch((err) => {
             console.warn("panic", err);
         });
@@ -287,7 +294,7 @@ function fn() {
            		<div class="comment">
                 	<div class="comment-user">
                 	    <img src="${avatar}" alt="Avatar" class="avatar">
-                	    	<span>${data[i].email}:</span>
+                	    <span>${data[i].email}:</span>
                 	</div>
                 	<div class="comment-body comment-text">
                 	    ${data[i].text}
@@ -311,35 +318,46 @@ function fn() {
         comments = null;
     }
 
-    const deletePhoto = function() {
+    const deleteFromDom = function(i) {
 
-        slides = slider.children;
-        var i , x = null;
-        for (i = 3; i < slides.length; i++) {
-            if (slides[i].dataset.position == 0) {
-		deleteFromdb((slides[i].children[0]).id , slides[i].id);
-                break;
-            }
-        }
         //realign to the right
+        let x;
         if (i == slides.length - 1) {
             slides[i].remove();
             for (let j = 3; j < slides.length; j++) {
-                x = 1*slides[j].dataset.position + 110;
+                x = 1 * slides[j].dataset.position + 110;
                 slides[j].dataset.position = x;
                 slides[j].style.transform = "translateX( " + x + "% )";
-                
             }
             index--;
             //realign to the left
         } else {
             for (let j = i + 1; j < slides.length; j++) {
-                x = 1*slides[j].dataset.position - 110;
+                x = 1 * slides[j].dataset.position - 110;
                 slides[j].dataset.position = x;
                 slides[j].style.transform = "translateX( " + x + "% )";
             }
             slides[i].remove();
         }
+    }
+    
+    const handleClick = function(clicked) {
+
+        if (comments != null) {
+            hideComments();
+            return;
+        }
+
+        comments = slider.parentNode.children[1];
+        comments.classList.remove("hidden");
+
+        clearInterval(show);
+        ids = [];
+        ids.push(clicked.id); //pid
+        ids.push(clicked.parentNode.id); //uid
+
+        fetchComments();
+
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -359,6 +377,7 @@ function fn() {
 
     // show/hide slider
     for (let i = 0; i < containers.length; i++) {
+        //closeCommentBtn[i].addEventListener("click", hideComments);
         containers[i].addEventListener("mouseover", mouseIn);
         containers[i].addEventListener("mouseleave", mouseOut);
         options[i].addEventListener("click", imageOptions);
@@ -373,30 +392,14 @@ function fn() {
         if (!clicked) {
             return;
         }
-
-        if (comments != null) {
-            hideComments();
-            return;
-        }
-
-        comments = slider.parentNode.children[1];
-        comments.classList.remove("hidden");
-
-        clearInterval(show);
-        ids = [];
-        ids.push(clicked.id); //pid
-        ids.push(clicked.parentNode.id); //uid
-
-        fetchComments();
+        clicks++;
+        setTimeout(() => {
+            if (clicks == 1) {
+                handleClick(clicked);
+            } else {
+                deletePhoto();
+            }
+            clicks = 0;
+        }, 200)
     })
-
-    // hide comments section when close button clicked
-    closeBtn.addEventListener("click", (event2) => {
-        const clicked = event2.target.closest("#closeCommentsButton");
-
-        if (clicked) {
-            hideComments();
-        }
-    })
-    
 }

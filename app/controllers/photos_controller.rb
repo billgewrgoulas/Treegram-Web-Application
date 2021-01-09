@@ -29,14 +29,13 @@ class PhotosController < ApplicationController
 
     photosDto = []
     
-    photos = Photo.where(user_id: ajaxParams[1]).sort_by{|e| e[:created_at]}.reverse
+    photos = Photo.where(user_id: ajaxParams[1]).sort_by{|e| e[:created_at]}
     
     i = 2*(ajaxParams[0].to_i)
     
     upper = i + 10
 
     while i < upper && i<photos.length  do
-      puts i
       photosDto.append({p_id: photos[i]['id'] , url: photos[i].image.url, title: photos[i]['title']})
       i +=1
     end

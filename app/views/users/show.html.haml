@@ -17,17 +17,12 @@
         %i.fas.fa-chevron-left.pagination-left.js-next
         %i.fas.fa-chevron-right.pagination-right.js-next
         .image-options
-          %i.fas.fa-comments.js-opt
           %i.far.fa-arrow-alt-circle-right.js-live.js-opt
-          %i.fas.fa-times.js-opt.js-delete
+          - if @user.id == photo.user_id
+            %i.fas.fa-times.js-opt.js-delete
       .comments.hidden
         .comment-header
-          .space
-          .header-title
-            %h1 Comments
-          .closeBtnContainer
-            %button#closeCommentsButton.btn
-              %i.far.fa-times-circle
+          %h1 Comments
         .comment-section
           
         .input
