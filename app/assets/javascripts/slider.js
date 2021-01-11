@@ -12,6 +12,8 @@ function fn() {
     const closeCommentBtn = document.querySelectorAll(".close-btn");
     const grid = document.querySelector(".incredible-grid");
     const post = document.querySelectorAll(".js-post");
+
+    var singleClickTimer = null;
     var comments = null;
     var slides = null;
     var slider = null;
@@ -25,6 +27,7 @@ function fn() {
     var pos = 0;
     var clicks = 0;
     var end = false;
+    var showWasUp = false;
 
     ////////////////////async calls to the server to retrieve/post data /delete//////////////////////////
 
@@ -78,7 +81,8 @@ function fn() {
                 console.warn("panic", error);
             });
         }
-        //get the comments for the clicked photo
+
+    //get the comments for the clicked photo
     const fetchComments = async function(event) {
         await fetch("/photos/" + ids[0] + "/comments", {
             method: "GET"
@@ -99,6 +103,13 @@ function fn() {
     const deletePhoto = async function() {
 
         slides = slider.children;
+
+        //check if photo belongs to some1 else
+        const property = slides[2].children[1];
+        if (property.classList.contains("js-belongs-to-followed")) {
+            return;
+        }
+
         let i;
         for (i = 3; i < slides.length; i++) {
             if (slides[i].dataset.position == 0) {
@@ -227,11 +238,16 @@ function fn() {
     //we are done, clear the slider , also clear the comments
     const mouseOut = function(event) {
 
+        if (!slider) {
+            return;
+        }
+
         slider.classList.add("hidden");
         slider.classList.remove("toggleSlider");
 
         //in case the live show is up
         clearInterval(show);
+        show = null;
 
         index = 0;
         pos = 0;
@@ -256,11 +272,17 @@ function fn() {
         slider.children[0].classList.add("hidden");
         slider.children[1].classList.add("hidden");
 
+        if (comments != null) {
+            hideComments();
+        }
+
         //start from current index and from left to right 
         show = setInterval(() => {
             next[1].click();
             if (end) {
                 clearInterval(show);
+                showWasUp = false;
+                show = null;
             }
         }, 2000)
 
@@ -309,16 +331,31 @@ function fn() {
     //hide the comment pop up and remove all appended comments in the comment section
     const hideComments = function() {
 
-        if (comments == null) {
+        if (!comments) {
             return;
         }
 
         comments.classList.add("hidden");
         comments.children[1].innerHTML = "";
         comments = null;
+
+        if (showWasUp) {
+            showWasUp = false;
+            liveShow();
+        }
     }
 
     const deleteFromDom = function(i) {
+
+        //replace/delete the first photo 
+        if (i === 3 && slides.length == 4) {
+            slider.classList.add("hidden");
+            slider.parentNode.remove();
+            return;
+            
+        } else if (i === 3 && slides.length > 4) {
+            slider.parentNode.children[2].src = slides[i + 1].children[0].src;
+        }
 
         //realign to the right
         let x;
@@ -340,21 +377,28 @@ function fn() {
             slides[i].remove();
         }
     }
-    
+
+    //single click action
     const handleClick = function(clicked) {
 
         if (comments != null) {
             hideComments();
             return;
         }
+        
+        if (show) {
+            clearInterval(show);
+            show = null;
+            console.log("ffgdfg");
+            showWasUp = true;
+        }
 
         comments = slider.parentNode.children[1];
         comments.classList.remove("hidden");
 
-        clearInterval(show);
         ids = [];
         ids.push(clicked.id); //pid
-        ids.push(clicked.parentNode.id); //uid
+        ids.push(slider.id); //uid
 
         fetchComments();
 
@@ -377,7 +421,7 @@ function fn() {
 
     // show/hide slider
     for (let i = 0; i < containers.length; i++) {
-        //closeCommentBtn[i].addEventListener("click", hideComments);
+        closeCommentBtn[i].addEventListener("click", hideComments);
         containers[i].addEventListener("mouseover", mouseIn);
         containers[i].addEventListener("mouseleave", mouseOut);
         options[i].addEventListener("click", imageOptions);
@@ -392,14 +436,17 @@ function fn() {
         if (!clicked) {
             return;
         }
+
         clicks++;
-        setTimeout(() => {
-            if (clicks == 1) {
+        if (clicks === 1) {
+            singleClickTimer = setTimeout(() => {
+                clicks = 0;
                 handleClick(clicked);
-            } else {
-                deletePhoto();
-            }
+            }, 200);
+        } else if (clicks === 2) {
+            clearTimeout(singleClickTimer);
             clicks = 0;
-        }, 200)
-    })
+            deletePhoto();
+        }
+    }, false)
 }

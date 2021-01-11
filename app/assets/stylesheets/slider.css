@@ -102,8 +102,8 @@
     border-radius: 20px;
     width: 7rem;
     height: 3rem;
-    right: -.2rem;
-    font-size: 1.6rem;
+    right: -1rem;
+    font-size: 2.6rem;
     background-color: #ffffff3d;
 }
 
@@ -137,9 +137,16 @@
 }
 
 
-#closeCommentsButton {
-    background-color: transparent;
-    border-style: none;
+.close-btn {
+    position: absolute;
+    font-size: 30px;
+    top: 8px;
+    right: 15px;
+}
+
+.close-btn:hover{
+    cursor: pointer;
+    color: grey;
 }
 
 .fa-times-circle {

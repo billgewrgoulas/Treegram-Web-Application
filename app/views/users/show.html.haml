@@ -13,16 +13,19 @@
 .incredible-grid
   - @followerPhotos.each  do |photo|
     .image-container{:id => "#{photo.user_id}-#{photo.id}"}
-      .slider.hidden
+      .slider.hidden{:id => "#{@user.id}"}
         %i.fas.fa-chevron-left.pagination-left.js-next
         %i.fas.fa-chevron-right.pagination-right.js-next
         .image-options
-          %i.far.fa-arrow-alt-circle-right.js-live.js-opt
+          %i.fas.fa-video.js-live.js-opt
           - if @user.id == photo.user_id
-            %i.fas.fa-times.js-opt.js-delete
+            .js-belongs-to-user.hidden
+          - else
+            .js-belongs-to-followed.hidden
       .comments.hidden
         .comment-header
           %h1 Comments
+          %i.fas.fa-times.close-btn
         .comment-section
           
         .input

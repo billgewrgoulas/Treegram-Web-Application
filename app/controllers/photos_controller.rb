@@ -29,7 +29,7 @@ class PhotosController < ApplicationController
 
     photosDto = []
     
-    photos = Photo.where(user_id: ajaxParams[1]).sort_by{|e| e[:created_at]}
+    photos = Photo.where(user_id: ajaxParams[1]).sort_by{|e| e[:created_at]}.reverse
     
     i = 2*(ajaxParams[0].to_i)
     

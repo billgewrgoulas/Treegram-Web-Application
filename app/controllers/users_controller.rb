@@ -44,19 +44,18 @@ class UsersController < ApplicationController
     # will pass to the view
     @followerPhotos = []
 
+    #photos of the current user
+    p = @user.photos.last
+    if p!=nil
+      @followerPhotos.append(p.clone)
+    end
+     
     #photos uploaded by the followers
     @usersF.each do |u|
-      u.photos.each do |p|
+      p = u.photos.last
+      if p!=nil
         @followerPhotos.append(p.clone)
-        break 
       end
-    end
-    @followerPhotos = @followerPhotos.sort_by{|e| e[:created_at]}.reverse
-    
-    #photos of the current user
-    @user.photos.each do |p|
-      @followerPhotos.unshift(p.clone)
-      break
     end
 
     @tag = Tag.new
