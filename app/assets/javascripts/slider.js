@@ -297,9 +297,7 @@ function fn() {
         if (clicked.classList.contains("js-live")) {
             clicked.parentNode.classList.add("hidden");
             liveShow(clicked);
-        } else if (clicked.classList.contains("js-delete")) {
-            deletePhoto();
-        }
+        } 
     }
 
     //add new comments to the comment pop up
@@ -389,7 +387,6 @@ function fn() {
         if (show) {
             clearInterval(show);
             show = null;
-            console.log("ffgdfg");
             showWasUp = true;
         }
 
@@ -428,7 +425,7 @@ function fn() {
         post[i].addEventListener("click", addComment);
     }
 
-    //prepare/hide the comments pop up
+    //handle the clicks on the picture
     grid.addEventListener("click", (event) => {
 
         const clicked = event.target.closest(".slide-image");

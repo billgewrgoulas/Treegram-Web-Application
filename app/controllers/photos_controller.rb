@@ -45,10 +45,11 @@ class PhotosController < ApplicationController
   end
 
   def destroy
+  
+	
 
     @photo = Photo.find_by(id: params[:id])
-
-
+	#no need to check here since we are sure that the photo belongs to the user
     @photo.destroy
     
     render json: { failed: false }
