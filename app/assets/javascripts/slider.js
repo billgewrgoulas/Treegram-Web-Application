@@ -1,3 +1,5 @@
+
+//our image slider and live show
 "use strict";
 
 $(document).ready(function() {
