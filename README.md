@@ -1,7 +1,7 @@
 Treegram
 ==============
 
-A ruby on rails app. Allows a user to create an account with username, password, and avatar. After login user can upload photos to their account and tag other users in the photos, follow users and see their photos, leave comments on a picture.
+A ruby on rails app. Allows a user to create an account with username, password, and avatar. After login users can upload photos to their account and tag other users in the photos, follow users and see their photos, leave comments on a picture.
 
 Installation and Usage
 ------------
